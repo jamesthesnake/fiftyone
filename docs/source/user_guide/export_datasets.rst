@@ -2192,6 +2192,7 @@ where `dataset.yaml` contains the following information:
 
 .. code-block:: text
 
+    path: <dataset_dir>  # optional
     train: ./images/train/
     val: ./images/val/
 
@@ -2205,7 +2206,9 @@ See `this page <https://docs.ultralytics.com/tutorials/train-custom-datasets>`_
 for a full description of the possible format of `dataset.yaml`. In particular,
 the dataset may contain one or more splits with arbitrary names, as the
 specific split being imported or exported is specified by the `split` argument
-to :class:`fiftyone.utils.yolo.YOLOv5DatasetExporter`.
+to :class:`fiftyone.utils.yolo.YOLOv5DatasetExporter`. Also, `dataset.yaml` can
+be located outside of `<dataset_dir>` as long as the optional `path` is
+provided.
 
 The TXT files in `labels/` are space-delimited files where each row corresponds
 to an object in the image of the same name, in one of the following formats:
@@ -2221,7 +2224,9 @@ where `<target>` is the zero-based integer index of the object class label from
 be included only if you pass the optional `include_confidence=True` flag to
 the export.
 
-Unlabeled images have no corresponding TXT file in `labels/`.
+Unlabeled images have no corresponding TXT file in `labels/`. The label file
+path for each image is obtained by replacing `images/` with `labels/` in the
+respective image path.
 
 .. note::
 
@@ -3600,9 +3605,12 @@ You can export a FiftyOne dataset to disk in the above format as follows:
             --export-dir $EXPORT_DIR \
             --type fiftyone.types.FiftyOneDataset
 
-You can also export datasets in this this format without copying the source
-media files by including `export_media=False` in your call to
+You can export datasets in this this format without copying the source media
+files by including `export_media=False` in your call to
 :meth:`export() <fiftyone.core.collections.SampleCollection.export>`.
+
+You can also pass `use_dirs=True` to export per-sample/frame JSON files rather
+than storing all samples/frames in single JSON files.
 
 By default, the absolute filepath of each image will be included in the export.
 However, if you want to re-import this dataset on a different machine with the
